@@ -13,7 +13,7 @@ let users = [
   {
     id: "3",
     name: "Vandana",
-    email: "vandanakunaritiwari@gmail.com",
+    email: "vandanakumaritiwari@gmail.com",
     age: 26,
   },
 ];

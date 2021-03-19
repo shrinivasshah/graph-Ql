@@ -37,6 +37,34 @@ const Mutation = {
     comments = comments.filter((comment) => comment.author !== args.id);
     return deletedUsers[0];
   },
+
+  // update user
+  updateUser(parent, args, { db: { users } }, info) {
+    const { id, data } = args;
+    const user = users.find((user) => user.id === id);
+    if (!user) {
+      throw new Error("No users found with this id");
+    }
+
+    if (typeof data.email === "string") {
+      const emailTaken = users.some((user) => user.email === data.email);
+      if (emailTaken) {
+        throw new Error("Email Taken");
+      }
+
+      user.email = data.email;
+    }
+    if (typeof data.name === "string") {
+      user.name = data.name;
+    }
+
+    if (typeof data.age !== "undefined") {
+      user.age = data.age;
+    }
+
+    return user;
+  },
+
   // create post
   createPost(parent, args, { db: { users, posts } }, info) {
     const userExists = users.some((user) => user.id === args.data.author);
@@ -68,6 +96,25 @@ const Mutation = {
     return deletedPosts[0];
   },
 
+  // update post
+  updatePost(parents, args, { db: { posts } }, info) {
+    const { id, data } = args;
+    const post = posts.find((post) => post.id === id);
+    if (!post) {
+      throw new Error("No post found with that ID");
+    }
+    if (typeof data.title === "string") {
+      post.title = data.title;
+    }
+    if (typeof data.body === "string") {
+      post.body = data.body;
+    }
+    if (typeof data.published === "boolean") {
+      post.published = data.published;
+    }
+    return post;
+  },
+
   // create comment
   createComment(parent, args, { db: { users, posts, comments } }, info) {
     const userExist = users.some((user) => user.id === args.data.author);
@@ -97,6 +144,21 @@ const Mutation = {
     const deletedComment = comments.splice(commentIndex, 1);
 
     return deletedComment[0];
+  },
+
+  //update comment
+  updateComment(parent, args, { db: { comments } }, info) {
+    const { id, data } = args;
+    const comment = comments.find((comment) => comment.id === id);
+    if (!comment) {
+      throw new Error("No comment found with the given ID");
+    }
+
+    if (typeof data.text === "string") {
+      comment.text = data.text;
+    }
+
+    return comment;
   },
 };
 
